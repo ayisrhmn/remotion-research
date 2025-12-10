@@ -1,0 +1,59 @@
+{
+  "name": "remotion-research",
+  "version": "1.0.0",
+  "private": true,
+  "author": {
+    "name": "Muhammad Fariz Rahman",
+    "email": "farizrahman30@gmail.com",
+    "url": "https://ayisrhmn.vercel.app"
+  },
+  "scripts": {
+    "dev": "next dev -p 3077",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "remotion": "remotionb studio",
+    "render": "remotionb render",
+    "deploy": "node deploy.mjs"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.383",
+    "@remotion/captions": "^4.0.383",
+    "@remotion/cli": "4.0.383",
+    "@remotion/google-fonts": "4.0.383",
+    "@remotion/lambda": "4.0.383",
+    "@remotion/paths": "4.0.383",
+    "@remotion/player": "4.0.383",
+    "@remotion/shapes": "4.0.383",
+    "@remotion/tailwind-v4": "4.0.383",
+    "clsx": "2.1.1",
+    "next": "16.0.8",
+    "react": "19.2.1",
+    "react-dom": "19.2.1",
+    "remotion": "4.0.383",
+    "tailwind-merge": "3.4.0",
+    "zod": "4.1.13"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.17",
+    "@remotion/eslint-plugin": "4.0.383",
+    "@eslint/eslintrc": "3.3.3",
+    "@eslint/js": "9.39.1",
+    "@types/node": "24.10.2",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "@types/web": "0.0.300",
+    "autoprefixer": "10.4.22",
+    "dotenv": "17.2.3",
+    "eslint": "9.39.1",
+    "@next/eslint-plugin-next": "16.0.8",
+    "eslint-config-next": "16.0.8",
+    "@typescript-eslint/eslint-plugin": "8.49.0",
+    "@typescript-eslint/parser": "8.49.0",
+    "postcss": "8.5.6",
+    "prettier": "3.7.4",
+    "tailwindcss": "4.1.17",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.49.0"
+  }
+}
