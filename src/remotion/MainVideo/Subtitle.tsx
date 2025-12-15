@@ -1,3 +1,4 @@
+/* eslint-disable @remotion/slow-css-property */
 import React from "react";
 import { useCurrentFrame, useVideoConfig, spring } from "remotion";
 import { Caption } from "@remotion/captions";
@@ -9,12 +10,14 @@ interface SubtitleProps {
   captions: Caption[];
   position?: "top" | "center" | "bottom";
   subtitleColor?: string;
+  subtitleOutlineColor?: string;
 }
 
 export const Subtitle: React.FC<SubtitleProps> = ({
   captions,
   position = "center",
-  subtitleColor = "yellow",
+  subtitleColor = "white",
+  subtitleOutlineColor = "black",
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -80,9 +83,21 @@ export const Subtitle: React.FC<SubtitleProps> = ({
           // - fontWeight: Text weight (e.g., 400 normal, 700 bold, 900 extra bold)
           // - color: Main text color
           fontFamily,
-          fontSize: 42,
+          fontSize: 50,
           fontWeight: 900,
           textAlign: "center",
+          alignItems: "center",
+          // Multi-layered text-shadow for a solid outline
+          textShadow: `
+              -2px -2px 0 ${subtitleOutlineColor},
+              2px -2px 0 ${subtitleOutlineColor},
+              -2px  2px 0 ${subtitleOutlineColor},
+              2px  2px 0 ${subtitleOutlineColor},
+              -2px  0   0 ${subtitleOutlineColor},
+              2px  0   0 ${subtitleOutlineColor},
+              0   -2px 0 ${subtitleOutlineColor},
+              0    2px 0 ${subtitleOutlineColor}
+          `,
           color: subtitleColor,
           textTransform: "uppercase",
           transform: `scale(${scale})`,

@@ -8,13 +8,15 @@ interface VideoPlayerProps {
   captions: Caption[];
   subtitlePosition?: "top" | "center" | "bottom";
   subtitleColor?: string;
+  subtitleOutlineColor?: string;
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   videoUrl,
   captions,
   subtitlePosition = "bottom",
-  subtitleColor = "yellow",
+  subtitleColor = "white",
+  subtitleOutlineColor = "black",
 }) => {
   return (
     <div className="aspect-9/16 w-full rounded-lg overflow-hidden border border-gray-200">
@@ -35,6 +37,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           captions,
           subtitlePosition,
           subtitleColor,
+          subtitleOutlineColor,
         }}
       />
     </div>

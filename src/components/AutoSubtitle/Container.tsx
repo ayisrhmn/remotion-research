@@ -3,43 +3,17 @@
 import React, { useState } from "react";
 import { InputForm } from "./InputForm";
 import { VideoPlayer } from "./VideoPlayer";
-import { Caption } from "@remotion/captions";
+import { Caption, parseSrt } from "@remotion/captions";
+
+import { DEMO_SRT } from "./constants";
 
 // Mock function to simulate AI transcription
-const mockTranscribe = async (url: string): Promise<Caption[]> => {
+const mockTranscribe = async (): Promise<Caption[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve([
-        {
-          startMs: 0,
-          endMs: 2000,
-          text: "Wait...",
-          timestampMs: 0,
-          confidence: 1,
-        },
-        {
-          startMs: 2000,
-          endMs: 4000,
-          text: "Parsing video from:",
-          timestampMs: 2000,
-          confidence: 1,
-        },
-        {
-          startMs: 4000,
-          endMs: 8000,
-          text: url,
-          timestampMs: 4000,
-          confidence: 1,
-        },
-        {
-          startMs: 8000,
-          endMs: 10000,
-          text: "Subtitles generated!",
-          timestampMs: 8000,
-          confidence: 1,
-        },
-      ]);
-    }, 2000);
+      const { captions } = parseSrt({ input: DEMO_SRT });
+      resolve(captions);
+    }, 1500);
   });
 };
 
@@ -50,14 +24,15 @@ export const AutoSubtitleContainer: React.FC = () => {
   const [subtitlePosition, setSubtitlePosition] = useState<
     "top" | "center" | "bottom"
   >("bottom");
-  const [subtitleColor, setSubtitleColor] = useState("yellow");
+  const [subtitleColor, setSubtitleColor] = useState("#ffffff");
+  const [subtitleOutlineColor, setSubtitleOutlineColor] = useState("#000000");
 
   const handleGenerate = async (url: string) => {
     setIsLoading(true);
     setVideoUrl(url);
     try {
       // Here we would call the real API
-      const caps = await mockTranscribe(url);
+      const caps = await mockTranscribe();
       setSubtitles(caps);
     } catch (error) {
       console.error(error);
@@ -111,15 +86,27 @@ export const AutoSubtitleContainer: React.FC = () => {
 
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Color
+                  Text Color
                 </label>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
-                    value={
-                      subtitleColor === "yellow" ? "#ffff00" : subtitleColor
-                    } // Simple fallback for named color
+                    value={subtitleColor}
                     onChange={(e) => setSubtitleColor(e.target.value)}
+                    className="h-9 w-full cursor-pointer rounded border border-gray-300 bg-white p-1"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium text-gray-600 uppercase tracking-wider">
+                  Outline Color
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={subtitleOutlineColor}
+                    onChange={(e) => setSubtitleOutlineColor(e.target.value)}
                     className="h-9 w-full cursor-pointer rounded border border-gray-300 bg-white p-1"
                   />
                 </div>
@@ -132,6 +119,7 @@ export const AutoSubtitleContainer: React.FC = () => {
             captions={subtitles}
             subtitlePosition={subtitlePosition}
             subtitleColor={subtitleColor}
+            subtitleOutlineColor={subtitleOutlineColor}
           />
         </div>
       )}
