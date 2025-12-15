@@ -10,6 +10,7 @@ interface VideoPlayerProps {
   subtitleColor?: string;
   subtitleOutlineColor?: string;
   subtitleBaseColor?: string;
+  subtitleVariant?: "hormozi" | "karaoke" | "boxed";
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
@@ -19,12 +20,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   subtitleColor = "white",
   subtitleOutlineColor = "black",
   subtitleBaseColor = "white",
+  subtitleVariant = "hormozi",
 }) => {
   return (
     <div className="aspect-9/16 w-full rounded-lg overflow-hidden border border-gray-200">
       <Player
         component={MainVideo}
-        durationInFrames={30 * 15} // Just a default duration properly dynamic later
+        durationInFrames={30 * 20} // 30fps * 20s (approx)
         fps={30}
         compositionWidth={1080}
         compositionHeight={1920}
@@ -41,6 +43,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
           subtitleColor,
           subtitleOutlineColor,
           subtitleBaseColor,
+          subtitleVariant,
         }}
       />
     </div>

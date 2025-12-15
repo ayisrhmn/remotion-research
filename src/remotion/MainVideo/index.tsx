@@ -1,4 +1,4 @@
-import { AbsoluteFill, Sequence, Html5Video } from "remotion";
+import { AbsoluteFill, Sequence, Video } from "remotion";
 import { Caption } from "@remotion/captions";
 import { Subtitle } from "./Subtitle";
 
@@ -9,6 +9,7 @@ interface MainVideoProps {
   subtitleColor?: string;
   subtitleOutlineColor?: string;
   subtitleBaseColor?: string;
+  subtitleVariant?: "hormozi" | "karaoke" | "boxed";
 }
 
 export const MainVideo: React.FC<MainVideoProps> = ({
@@ -16,9 +17,10 @@ export const MainVideo: React.FC<MainVideoProps> = ({
   captions = [],
   // Default if no prop is provided
   subtitlePosition = "bottom",
-  subtitleColor = "white",
+  subtitleColor = "yellow",
   subtitleOutlineColor = "black",
   subtitleBaseColor = "white",
+  subtitleVariant = "hormozi",
 }) => {
   return (
     <AbsoluteFill
@@ -26,7 +28,7 @@ export const MainVideo: React.FC<MainVideoProps> = ({
     >
       <Sequence durationInFrames={30 * 20}>
         {videoUrl ? (
-          <Html5Video
+          <Video
             src={videoUrl}
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
@@ -43,6 +45,7 @@ export const MainVideo: React.FC<MainVideoProps> = ({
           subtitleColor={subtitleColor}
           subtitleOutlineColor={subtitleOutlineColor}
           subtitleBaseColor={subtitleBaseColor}
+          variant={subtitleVariant}
         />
       </Sequence>
     </AbsoluteFill>
