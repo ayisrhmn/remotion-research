@@ -18,6 +18,7 @@ const mockTranscribe = async (): Promise<Caption[]> => {
 
 export const AutoSubtitleContainer: React.FC = () => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [video2Url, setVideo2Url] = useState<string | null>(null);
   const [subtitles, setSubtitles] = useState<Caption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [subtitlePosition, setSubtitlePosition] = useState<
@@ -29,10 +30,14 @@ export const AutoSubtitleContainer: React.FC = () => {
   const [subtitleVariant, setSubtitleVariant] = useState<
     "hormozi" | "karaoke" | "boxed"
   >("hormozi");
+  const [transitionType, setTransitionType] = useState<
+    "none" | "fade" | "slide"
+  >("slide");
 
-  const handleGenerate = async (url: string) => {
+  const handleGenerate = async (url: string, url2?: string) => {
     setIsLoading(true);
     setVideoUrl(url);
+    setVideo2Url(url2 || null);
     try {
       const caps = await mockTranscribe();
       setSubtitles(caps);
@@ -50,7 +55,7 @@ export const AutoSubtitleContainer: React.FC = () => {
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">Remotion Research 🤖</h1>
         <p className="text-gray-600 mb-8">
-          Enter a video URL to automagically add subtitles.
+          Enter video URL(s) to automagically add subtitles (& merge clips).
         </p>
 
         <div className="flex justify-center mb-8">
@@ -106,6 +111,30 @@ export const AutoSubtitleContainer: React.FC = () => {
                   </button>
                 </div>
               </div>
+
+              {/* Transition Selector - Only shows if 2 videos */}
+              {video2Url && (
+                <div className="flex flex-col gap-2 col-span-2">
+                  <label className="text-xs font-medium text-gray-600 uppercase tracking-wider">
+                    Transition Effect
+                  </label>
+                  <div className="flex gap-2">
+                    {(["none", "fade", "slide"] as const).map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => setTransitionType(type)}
+                        className={`flex-1 py-2 px-3 text-sm font-medium rounded-md transition-colors capitalize ${
+                          transitionType === type
+                            ? "bg-purple-600 text-white"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        }`}
+                      >
+                        {type}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Position Control */}
               <div className="flex flex-col gap-2">
@@ -176,6 +205,8 @@ export const AutoSubtitleContainer: React.FC = () => {
 
           <VideoPlayer
             videoUrl={videoUrl}
+            video2Url={video2Url}
+            transitionType={transitionType}
             captions={subtitles}
             subtitlePosition={subtitlePosition}
             subtitleColor={subtitleColor}
@@ -183,8 +214,6 @@ export const AutoSubtitleContainer: React.FC = () => {
             subtitleBaseColor={subtitleBaseColor}
             subtitleVariant={subtitleVariant}
           />
-
-          {/* Render button removed */}
         </div>
       )}
     </div>
