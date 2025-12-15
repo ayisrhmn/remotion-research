@@ -9,15 +9,17 @@ const { fontFamily } = loadFont();
 interface SubtitleProps {
   captions: Caption[];
   position?: "top" | "center" | "bottom";
-  subtitleColor?: string;
+  subtitleColor?: string; // This is the highlight color
   subtitleOutlineColor?: string;
+  subtitleBaseColor?: string; // New prop for base text color
 }
 
 export const Subtitle: React.FC<SubtitleProps> = ({
   captions,
   position = "center",
-  subtitleColor = "white",
+  subtitleColor = "yellow",
   subtitleOutlineColor = "black",
+  subtitleBaseColor = "white",
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -33,18 +35,14 @@ export const Subtitle: React.FC<SubtitleProps> = ({
     return null;
   }
 
-  // Calculate entry animation
-  const startFrame = (activeCaption.startMs / 1000) * fps;
-  const timeSinceStart = frame - startFrame;
+  // 1. SPLIT TEXT INTO WORDS
+  const words = activeCaption.text.trim().split(/\s+/);
 
-  const scale = spring({
-    frame: timeSinceStart,
-    fps,
-    config: {
-      damping: 10,
-      stiffness: 100,
-    },
-  });
+  // 2. CALCULATE TIMING PER WORD (Simple Interpolation)
+  const captionStartFrame = (activeCaption.startMs / 1000) * fps;
+  const captionEndFrame = (activeCaption.endMs / 1000) * fps;
+  const captionDurationInFrames = captionEndFrame - captionStartFrame;
+  const framesPerWord = captionDurationInFrames / words.length;
 
   return (
     <div
@@ -56,11 +54,6 @@ export const Subtitle: React.FC<SubtitleProps> = ({
         height: "100%",
         display: "flex",
         justifyContent: "center",
-        // -------------------------------------------------------------------------
-        // POSITIONING LOGIC
-        // -------------------------------------------------------------------------
-        // This is where we control the vertical position of the subtitle (top, center, bottom).
-        // Change the padding value (360) below to adjust the distance from the edge.
         alignItems:
           position === "top"
             ? "flex-start"
@@ -70,42 +63,74 @@ export const Subtitle: React.FC<SubtitleProps> = ({
         paddingTop: position === "top" ? 360 : 0,
         paddingBottom: position === "bottom" ? 360 : 0,
         pointerEvents: "none",
+        paddingLeft: 60,
+        paddingRight: 60,
       }}
     >
       <div
         style={{
-          // -----------------------------------------------------------------------
-          // TEXT STYLING
-          // -----------------------------------------------------------------------
-          // This is where you can change font, color, size, and text style.
-          // - fontFamily: Change the font used
-          // - fontSize: Change the text size
-          // - fontWeight: Text weight (e.g., 400 normal, 700 bold, 900 extra bold)
-          // - color: Main text color
-          fontFamily,
-          fontSize: 50,
-          fontWeight: 900,
-          textAlign: "center",
-          alignItems: "center",
-          // Multi-layered text-shadow for a solid outline
-          textShadow: `
-              -2px -2px 0 ${subtitleOutlineColor},
-              2px -2px 0 ${subtitleOutlineColor},
-              -2px  2px 0 ${subtitleOutlineColor},
-              2px  2px 0 ${subtitleOutlineColor},
-              -2px  0   0 ${subtitleOutlineColor},
-              2px  0   0 ${subtitleOutlineColor},
-              0   -2px 0 ${subtitleOutlineColor},
-              0    2px 0 ${subtitleOutlineColor}
-          `,
-          color: subtitleColor,
-          textTransform: "uppercase",
-          transform: `scale(${scale})`,
-          padding: "0 40px",
-          lineHeight: 1.2,
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: "12px", // Space between words
+          maxWidth: "80%",
         }}
       >
-        {activeCaption.text}
+        {words.map((word, index) => {
+          // Calculate start frame for THIS specific word
+          const wordStartFrame = captionStartFrame + index * framesPerWord;
+          const wordEndFrame = wordStartFrame + framesPerWord;
+
+          // Animation: Spring Pop-in
+          const timeSinceWordStart = frame - wordStartFrame;
+          const scale = spring({
+            frame: timeSinceWordStart,
+            fps,
+            config: {
+              damping: 12,
+              stiffness: 200,
+              mass: 0.5,
+            },
+          });
+
+          // Logic: Is this word currently being spoken?
+          const isWordActive = frame >= wordStartFrame && frame < wordEndFrame;
+
+          return (
+            <span
+              key={`${activeCaption.startMs}-${index}`}
+              style={{
+                fontFamily,
+                fontSize: 50,
+                fontWeight: 900,
+                textAlign: "center",
+                textTransform: "uppercase",
+                lineHeight: 1.2,
+                display: "inline-block",
+
+                // Dynamic Styling
+                transform: `scale(${scale})`,
+                color: isWordActive ? subtitleColor : subtitleBaseColor, // Use base color for inactive words
+                opacity: frame < wordStartFrame ? 0 : 1, // Hide future words in the same sentence
+
+                // Outline Effect
+                textShadow: `
+                  -2px -2px 0 ${subtitleOutlineColor},
+                  2px -2px 0 ${subtitleOutlineColor},
+                  -2px  2px 0 ${subtitleOutlineColor},
+                  2px  2px 0 ${subtitleOutlineColor},
+                  -2px  0   0 ${subtitleOutlineColor},
+                  2px  0   0 ${subtitleOutlineColor},
+                  0   -2px 0 ${subtitleOutlineColor},
+                  0    2px 0 ${subtitleOutlineColor},
+                  4px  4px 0 rgba(0,0,0,0.5) 
+                `, // Added slight drop shadow for depth
+              }}
+            >
+              {word}
+            </span>
+          );
+        })}
       </div>
     </div>
   );

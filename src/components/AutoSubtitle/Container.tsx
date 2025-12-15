@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { InputForm } from "./InputForm";
 import { VideoPlayer } from "./VideoPlayer";
 import { Caption, parseSrt } from "@remotion/captions";
-
 import { DEMO_SRT } from "./constants";
 
 // Mock function to simulate AI transcription
@@ -24,14 +23,14 @@ export const AutoSubtitleContainer: React.FC = () => {
   const [subtitlePosition, setSubtitlePosition] = useState<
     "top" | "center" | "bottom"
   >("bottom");
-  const [subtitleColor, setSubtitleColor] = useState("#ffffff");
+  const [subtitleBaseColor, setSubtitleBaseColor] = useState("#ffffff");
+  const [subtitleColor, setSubtitleColor] = useState("#ffff00"); // Highlight
   const [subtitleOutlineColor, setSubtitleOutlineColor] = useState("#000000");
 
   const handleGenerate = async (url: string) => {
     setIsLoading(true);
     setVideoUrl(url);
     try {
-      // Here we would call the real API
       const caps = await mockTranscribe();
       setSubtitles(caps);
     } catch (error) {
@@ -65,6 +64,7 @@ export const AutoSubtitleContainer: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
+              {/* Position Control */}
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-medium text-gray-600 uppercase tracking-wider">
                   Position
@@ -84,9 +84,25 @@ export const AutoSubtitleContainer: React.FC = () => {
                 </select>
               </div>
 
+              {/* Base Color Control */}
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Text Color
+                  Base Text Color
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={subtitleBaseColor}
+                    onChange={(e) => setSubtitleBaseColor(e.target.value)}
+                    className="h-9 w-full cursor-pointer rounded border border-gray-300 bg-white p-1"
+                  />
+                </div>
+              </div>
+
+              {/* Highlight Color Control */}
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium text-gray-600 uppercase tracking-wider">
+                  Highlight Color
                 </label>
                 <div className="flex items-center gap-2">
                   <input
@@ -98,6 +114,7 @@ export const AutoSubtitleContainer: React.FC = () => {
                 </div>
               </div>
 
+              {/* Outline Color Control */}
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-medium text-gray-600 uppercase tracking-wider">
                   Outline Color
@@ -120,6 +137,7 @@ export const AutoSubtitleContainer: React.FC = () => {
             subtitlePosition={subtitlePosition}
             subtitleColor={subtitleColor}
             subtitleOutlineColor={subtitleOutlineColor}
+            subtitleBaseColor={subtitleBaseColor}
           />
         </div>
       )}

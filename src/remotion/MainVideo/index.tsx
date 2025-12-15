@@ -8,6 +8,7 @@ interface MainVideoProps {
   subtitlePosition?: "top" | "center" | "bottom";
   subtitleColor?: string;
   subtitleOutlineColor?: string;
+  subtitleBaseColor?: string;
 }
 
 export const MainVideo: React.FC<MainVideoProps> = ({
@@ -17,6 +18,7 @@ export const MainVideo: React.FC<MainVideoProps> = ({
   subtitlePosition = "bottom",
   subtitleColor = "white",
   subtitleOutlineColor = "black",
+  subtitleBaseColor = "white",
 }) => {
   return (
     <AbsoluteFill
@@ -40,6 +42,7 @@ export const MainVideo: React.FC<MainVideoProps> = ({
           position={subtitlePosition}
           subtitleColor={subtitleColor}
           subtitleOutlineColor={subtitleOutlineColor}
+          subtitleBaseColor={subtitleBaseColor}
         />
       </Sequence>
     </AbsoluteFill>
