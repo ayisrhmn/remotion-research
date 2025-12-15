@@ -47,6 +47,10 @@ export const AutoSubtitleContainer: React.FC = () => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [subtitles, setSubtitles] = useState<Caption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [subtitlePosition, setSubtitlePosition] = useState<
+    "top" | "center" | "bottom"
+  >("bottom");
+  const [subtitleColor, setSubtitleColor] = useState("yellow");
 
   const handleGenerate = async (url: string) => {
     setIsLoading(true);
@@ -77,8 +81,58 @@ export const AutoSubtitleContainer: React.FC = () => {
       </div>
 
       {videoUrl && subtitles.length > 0 && (
-        <div className="w-full max-w-4xl bg-white p-4 rounded-xl shadow-lg">
-          <VideoPlayer videoUrl={videoUrl} captions={subtitles} />
+        <div className="w-full max-w-md bg-white p-4 rounded-xl shadow-lg">
+          <div className="flex flex-col gap-4 mb-4">
+            <div className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+              <span className="text-sm font-semibold text-gray-700">
+                Settings
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium text-gray-600 uppercase tracking-wider">
+                  Position
+                </label>
+                <select
+                  value={subtitlePosition}
+                  onChange={(e) =>
+                    setSubtitlePosition(
+                      e.target.value as "top" | "center" | "bottom",
+                    )
+                  }
+                  className="p-2 border rounded-md text-sm border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+                >
+                  <option value="top">Top</option>
+                  <option value="center">Center</option>
+                  <option value="bottom">Bottom</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium text-gray-600 uppercase tracking-wider">
+                  Color
+                </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={
+                      subtitleColor === "yellow" ? "#ffff00" : subtitleColor
+                    } // Simple fallback for named color
+                    onChange={(e) => setSubtitleColor(e.target.value)}
+                    className="h-9 w-full cursor-pointer rounded border border-gray-300 bg-white p-1"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <VideoPlayer
+            videoUrl={videoUrl}
+            captions={subtitles}
+            subtitlePosition={subtitlePosition}
+            subtitleColor={subtitleColor}
+          />
         </div>
       )}
     </div>

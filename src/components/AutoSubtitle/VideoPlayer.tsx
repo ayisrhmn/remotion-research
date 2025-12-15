@@ -6,28 +6,35 @@ import { Caption } from "@remotion/captions";
 interface VideoPlayerProps {
   videoUrl: string;
   captions: Caption[];
+  subtitlePosition?: "top" | "center" | "bottom";
+  subtitleColor?: string;
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   videoUrl,
   captions,
+  subtitlePosition = "bottom",
+  subtitleColor = "yellow",
 }) => {
   return (
-    <div className="aspect-video w-full rounded-lg overflow-hidden border border-gray-200">
+    <div className="aspect-9/16 w-full rounded-lg overflow-hidden border border-gray-200">
       <Player
         component={MainVideo}
-        durationInFrames={30 * 20} // Just a default duration properly dynamic later
+        durationInFrames={30 * 15} // Just a default duration properly dynamic later
         fps={30}
-        compositionWidth={1920}
-        compositionHeight={1080}
+        compositionWidth={1080}
+        compositionHeight={1920}
         style={{
           width: "100%",
           height: "100%",
         }}
         controls
+        autoPlay
         inputProps={{
           videoUrl,
           captions,
+          subtitlePosition,
+          subtitleColor,
         }}
       />
     </div>

@@ -11,11 +11,13 @@ export const RemotionRoot: React.FC = () => {
         component={MainVideo}
         durationInFrames={30 * 15}
         fps={30}
-        width={1920}
-        height={1080}
+        width={1080}
+        height={1920}
         defaultProps={{
           videoUrl: undefined,
           captions: parseSrt({ input: sampleSubs }).captions,
+          // Change 'bottom', 'center', or 'top' to change the initial default position
+          subtitlePosition: "bottom" as const,
         }}
       />
     </>

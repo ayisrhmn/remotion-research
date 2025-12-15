@@ -9,7 +9,9 @@ export const InputForm: React.FC<InputFormProps> = ({
   onSubmit,
   isLoading,
 }) => {
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState(
+    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
